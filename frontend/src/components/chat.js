@@ -6,7 +6,7 @@ import Message from "./message";
 
 let socket;
 
-const Chat = ({ username }) => {
+const Chat = ({ logout }) => {
   //Ref for typed messages
   const messageRef = useRef();
 
@@ -15,6 +15,9 @@ const Chat = ({ username }) => {
 
   //Array of messages
   const [message, setMessage] = useState([]);
+
+  //Username from local
+  const username = localStorage.getItem("username");
 
   useEffect(() => {
     //Connect on component render
@@ -30,17 +33,24 @@ const Chat = ({ username }) => {
 
       //Focus back on input field
       messageRef.current.focus();
+
+      //Check if logged in
     });
   }, []);
 
+  //Handle send
   const onClick = () => {
     if (messageRef.current.value !== "") {
-      socket.emit("message", { msg: messageRef.current.value, user: username });
+      socket.emit("message", {
+        msg: messageRef.current.value,
+        user: username,
+      });
       messageRef.current.value = "";
     }
     messageRef.current.focus();
   };
 
+  //Enable enter to send
   const onEnter = (e) => {
     if (e.key === "Enter") {
       if (messageRef.current.value !== "") {
@@ -97,6 +107,10 @@ const Chat = ({ username }) => {
           <InputGroup.Append>
             <Button onClick={() => onClick()}>Send</Button>
           </InputGroup.Append>
+
+          <InputGroup.Prepend>
+            <Button onClick={() => logout()}>Logout</Button>
+          </InputGroup.Prepend>
         </InputGroup>
       </Form.Group>
     </Container>

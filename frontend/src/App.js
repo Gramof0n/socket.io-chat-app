@@ -10,9 +10,23 @@ function App() {
   const join = (username, room) => {
     setUsername(username);
     setRoom(room);
+    localStorage.setItem("username", username);
   };
+
+  //Handle logout
+  const logout = () => {
+    localStorage.removeItem("username");
+    window.location.reload(false);
+  };
+
   return (
-    <>{!username ? <Login join={join} /> : <Chat username={username} />}</>
+    <>
+      {!localStorage.getItem("username") ? (
+        <Login join={join} />
+      ) : (
+        <Chat username={username} logout={logout} />
+      )}
+    </>
   );
 }
 
